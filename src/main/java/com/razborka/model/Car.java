@@ -1,5 +1,10 @@
 package com.razborka.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Type;
+import org.joda.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +17,7 @@ import java.util.List;
 public class Car implements Serializable {
 
     private int id;
+    private User user;
     private Brand brand;
     private Model model;
     private int volume;
@@ -20,6 +26,7 @@ public class Car implements Serializable {
     private Kpp kpp;
     private int year_from;
     private int year_to;
+    private LocalDate date;
 
     private List<Order> orders;
     private List<Part> parts;
@@ -33,6 +40,16 @@ public class Car implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = false)
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @ManyToOne
@@ -112,6 +129,7 @@ public class Car implements Serializable {
         this.year_to = year_to;
     }
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "car")
     public List<Order> getOrders() {
         return orders;
@@ -121,6 +139,7 @@ public class Car implements Serializable {
         this.orders = orders;
     }
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "car")
     public List<Part> getParts() {
         return parts;
@@ -128,5 +147,31 @@ public class Car implements Serializable {
 
     public void setParts(List<Part> parts) {
         this.parts = parts;
+    }
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "date", nullable = true)
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @Temporal(TemporalType.TIMESTAMP)
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "id=" + getId() +
+                "user=" + getUser().getId() +
+                "brand=" + getBrand().getId() +
+                "model=" + getModel().getId() +
+                "volume=" + getVolume() +
+                "fuel=" + getFuel().getId() +
+                "body=" + getBody().getId() +
+                "kpp=" + getKpp().getId() +
+                "year_from=" + getYear_from() +
+                "year_to=" + getYear_to();
     }
 }

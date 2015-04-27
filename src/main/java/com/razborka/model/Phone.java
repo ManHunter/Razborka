@@ -13,6 +13,14 @@ public class Phone {
     private User user;
     private String phoneNumber;
 
+    public Phone() {
+    }
+
+    public Phone(User user, String phoneNumber) {
+        this.user = user;
+        this.phoneNumber = phoneNumber;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")

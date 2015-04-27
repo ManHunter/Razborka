@@ -11,6 +11,8 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -45,6 +47,16 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     @Bean
     public UserDetailsService getUserDetailsService(){
         return new UserDetailsServiceImpl();
+    }
+
+    /**
+     * Supports FileUploads.
+     */
+    @Bean
+    public MultipartResolver multipartResolver() {
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        multipartResolver.setMaxUploadSize(5000000);
+        return multipartResolver;
     }
 
     @Override

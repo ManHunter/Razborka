@@ -15,6 +15,16 @@ public class Address {
     private String city;
     private String address;
 
+    public Address() {
+    }
+
+    public Address(User user, String contry, String city, String address) {
+        this.user = user;
+        this.contry = contry;
+        this.city = city;
+        this.address = address;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")

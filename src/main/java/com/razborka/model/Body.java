@@ -1,5 +1,7 @@
 package com.razborka.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -36,6 +38,7 @@ public class Body implements Serializable {
         this.name = name;
     }
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "body")
     public List<Car> getCars() {
         return cars;

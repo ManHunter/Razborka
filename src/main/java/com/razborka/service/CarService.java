@@ -18,4 +18,8 @@ public interface CarService {
     public List<Car> getAllCar();
 
     public Car getCarById(int id);
+
+    public List<Car> getAllUserCars(int user_id);
+
+    public int countPartByCarId(int car_id);
 }

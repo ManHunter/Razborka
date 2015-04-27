@@ -1,5 +1,8 @@
 package com.razborka.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -25,6 +28,7 @@ public class Photo implements Serializable {
         this.id = id;
     }
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "part_id", nullable = true, unique = false)
     public Part getPart() {

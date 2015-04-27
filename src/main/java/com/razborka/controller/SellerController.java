@@ -2,15 +2,20 @@ package com.razborka.controller;
 
 import com.razborka.model.*;
 import com.razborka.service.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -32,19 +37,10 @@ public class SellerController {
     private PartGroupService partGroupService;
 
     @Autowired
-    private PartTypeService partTypeService;
-
-    @Autowired
-    private PhotoService photoService;
-
-    @Autowired
     private CarService carService;
 
     @Autowired
     private BrandService brandService;
-
-    @Autowired
-    private ModelService modelService;
 
     @Autowired
     private BodyTypeService bodyTypeService;
@@ -91,53 +87,20 @@ public class SellerController {
     @RequestMapping(value = "/parts", method = RequestMethod.GET)
     public String parts(ModelMap model) {
         User user = userService.getCurrentUser();
-        List<Part> parts = partService.getAllUserPart(user.getId());
-
-        model.addAttribute("parts", parts);
+        //List<Part> parts = partService.getAllUserPart(user.getId());
+        List<Car> cars = carService.getAllUserCars(user.getId());
+        model.addAttribute("cars", cars);
+        model.addAttribute("brands", brandService.getAllBrand());
+        model.addAttribute("bodies", bodyTypeService.getAllBody());
+        model.addAttribute("kpps", kppService.getAllKpp());
+        model.addAttribute("fuels", fuelService.getAllFuel());
+        model.addAttribute("partGroups", partGroupService.getAllPartGroup());
+        model.addAttribute("part", new Part());
+        model.addAttribute("car", new Car());
 
         return "seller/parts";
     }
 
-    @RequestMapping(value = "/part/add", method = RequestMethod.GET)
-    public String addFormPart(ModelMap model) {
-        model.addAttribute("part", new Part());
-        model.addAttribute("brands", brandService.getAllBrand());
-        model.addAttribute("bodies", bodyTypeService.getAllBody());
-        model.addAttribute("kpps", kppService.getAllKpp());
-        model.addAttribute("fuels", fuelService.getAllFuel());
-        model.addAttribute("partGroups", partGroupService.getAllPartGroup());
 
-        return "seller/part_add";
-    }
-
-    @RequestMapping(value = "/part/add", method = RequestMethod.POST)
-    public String savePart(Part part) {
-        User user = userService.getCurrentUser();
-        part.setUser(user);
-        partService.savePart(part);
-        return "redirect:/profile/seller/parts";
-    }
-
-    @RequestMapping(value = "/part/edit", method = RequestMethod.GET)
-    public String editFormPart(@RequestParam("id") int id, ModelMap model) {
-        Part part = partService.getPartById(id);
-        model.addAttribute("brands", brandService.getAllBrand());
-        model.addAttribute("bodies", bodyTypeService.getAllBody());
-        model.addAttribute("kpps", kppService.getAllKpp());
-        model.addAttribute("fuels", fuelService.getAllFuel());
-        model.addAttribute("partGroups", partGroupService.getAllPartGroup());
-        model.addAttribute("part", part);
-
-        return "seller/part_edit";
-    }
-
-    @RequestMapping(value = "/part/edit", method = RequestMethod.POST)
-    public String editPart(@ModelAttribute Part part) {
-        log.info(part);
-        System.out.println("car.id" + part.getCar().getId());
-        partService.updatePart(part);
-
-        return "redirect:/";
-    }
 
 }

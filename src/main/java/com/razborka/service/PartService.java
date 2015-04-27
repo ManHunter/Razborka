@@ -21,4 +21,6 @@ public interface PartService {
     public Part getPartById(int id);
 
     public List<Part> getAllUserPart(int user_id);
+
+    public List<Part> getAllPartsCar(int car_id);
 }

@@ -1,15 +1,11 @@
 package com.razborka.controller;
 
-import com.razborka.model.Model;
-import com.razborka.model.PartType;
+import com.razborka.model.*;
 import com.razborka.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -55,5 +51,22 @@ public class CarController {
     List<PartType> getPartTypes(@RequestParam("groupId") int groupId) {
         List<PartType> partTypes = partTypeService.getPartTypeByGroupId(groupId);
         return partTypes;
+    }
+
+    @RequestMapping(value = "/get/{id}", method = RequestMethod.POST)
+    public @ResponseBody
+    Car editCarForm(@PathVariable("id") int car_id) {
+        Car car = carService.getCarById(car_id);
+        //System.out.println("id car " + car.getId());
+        return car;
+    }
+
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
+    public @ResponseBody
+    Car editCar(@ModelAttribute Car car, @PathVariable("id") int car_id) {
+        User user = carService.getCarById(car_id).getUser();
+        car.setUser(user);
+        carService.updateCar(car);
+        return carService.getCarById(car_id);
     }
 }

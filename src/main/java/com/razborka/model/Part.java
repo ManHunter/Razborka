@@ -1,11 +1,16 @@
 package com.razborka.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,7 +23,6 @@ import java.util.List;
 public class Part implements Serializable {
 
     private int id;
-    private User user;
     private PartGroup group;
     private PartType type;
     private Car car;
@@ -26,7 +30,7 @@ public class Part implements Serializable {
     private BigDecimal price;
     private int catalogNumber;
     private String description;
-    private LocalDate date;
+    private LocalDateTime date;
 
     private List<Photo> photos;
 
@@ -45,16 +49,7 @@ public class Part implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true, unique = false)
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    @ManyToOne(cascade = CascadeType.ALL)
+    @Cascade(value = CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "car_id", nullable = true, unique = false)
     public Car getCar() {
         return car;
@@ -120,6 +115,8 @@ public class Part implements Serializable {
         this.description = description;
     }
 
+    //@JsonIgnore
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "part")
     public List<Photo> getPhotos() {
         return photos;
@@ -129,22 +126,22 @@ public class Part implements Serializable {
         this.photos = photos;
     }
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
     @Column(name = "date", nullable = true)
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     @Temporal(TemporalType.TIMESTAMP)
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
+    @JsonIgnore
     @Override
     public String toString() {
-        return "user: " + user +
-                "partGroup: " + group +
+        return  "partGroup: " + group +
                 "partType: " + type +
                 "car: " + car +
                 "condition: " + condition +

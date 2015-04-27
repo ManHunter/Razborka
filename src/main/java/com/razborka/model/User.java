@@ -1,5 +1,6 @@
 package com.razborka.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,10 +26,12 @@ public class User implements Serializable {
     private String role;
     private LocalDate date;
 
-    private List<Part> parts;
+    private List<Car> cars;
     private List<Service> services;
     private List<Message> messages;
     private List<Review> reviews;
+    private List<Address> addresses;
+    private List<Phone> phones;
 
     public User() {
     }
@@ -101,6 +104,7 @@ public class User implements Serializable {
         this.date = date;
     }
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     public List<Service> getServices() {
         return services;
@@ -110,15 +114,17 @@ public class User implements Serializable {
         this.services = services;
     }
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    public List<Part> getParts() {
-        return parts;
+    public List<Car> getParts() {
+        return cars;
     }
 
-    public void setParts(List<Part> parts) {
-        this.parts = parts;
+    public void setParts(List<Car> cars) {
+        this.cars = cars;
     }
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     public List<Message> getMessages() {
         return messages;
@@ -128,6 +134,7 @@ public class User implements Serializable {
         this.messages = messages;
     }
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     public List<Review> getReviews() {
         return reviews;
@@ -135,5 +142,37 @@ public class User implements Serializable {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    @JsonIgnore
+    @Transient
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    //@Transient
+    public List<Car> getCars() {
+        return cars;
+    }
+
+    public void setCars(List<Car> cars) {
+        this.cars = cars;
+    }
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    public List<Phone> getPhones() {
+        return phones;
+    }
+
+    public void setPhones(List<Phone> phones) {
+        this.phones = phones;
     }
 }

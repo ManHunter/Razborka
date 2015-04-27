@@ -7,6 +7,7 @@ import com.razborka.service.PartService;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class PartServiceImpl implements PartService {
 
     @Override
     public void savePart(Part part) {
-        part.setDate(LocalDate.now());
+        part.setDate(LocalDateTime.now());
         partDao.save(part);
     }
 
@@ -53,6 +54,11 @@ public class PartServiceImpl implements PartService {
     @Override
     public List<Part> getAllUserPart(int user_id) {
         return partDao.getAllUserPart(user_id);
+    }
+
+    @Override
+    public List<Part> getAllPartsCar(int car_id) {
+        return partDao.getAllPartsCar(car_id);
     }
 
 

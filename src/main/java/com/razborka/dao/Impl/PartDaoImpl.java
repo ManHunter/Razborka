@@ -2,13 +2,11 @@ package com.razborka.dao.Impl;
 
 import com.razborka.dao.AbstractDao;
 import com.razborka.dao.PartDao;
-import com.razborka.model.Body;
+import com.razborka.model.Car;
 import com.razborka.model.Part;
-import com.razborka.model.User;
 import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.Query;
+import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +20,20 @@ public class PartDaoImpl extends AbstractDao<Part> implements PartDao {
     @Transactional
     @Override
     public List<Part> getAllUserPart(int user_id) {
-        Criteria criteria = getSession().createCriteria(Part.class);
-        criteria.add(Restrictions.eq("user.id", user_id));
+        DetachedCriteria subquery = DetachedCriteria.forClass(Car.class)
+                .add(Restrictions.eq("user.id", user_id))
+                .setProjection(Projections.property("id"));
+
+        Criteria criteria = getSession().createCriteria(Part.class)
+                .add(Subqueries.propertyIn("car.id", subquery));
+
+        return criteria.list();
+    }
+
+    @Override
+    public List<Part> getAllPartsCar(int car_id) {
+        Criteria criteria = getSession().createCriteria(Part.class)
+                .add(Restrictions.eq("car.id", car_id));
         return criteria.list();
     }
 }
