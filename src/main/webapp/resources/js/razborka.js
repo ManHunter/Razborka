@@ -11,6 +11,7 @@ function saveAddress() {
         data: "country=" + country + "&city=" + city + "&address=" + address,
         type: "POST",
         success: function (result) {
+            $('#addressModal').modal('hide');
         },
         error: function (e) {
         }
@@ -25,6 +26,7 @@ function savePhone() {
         data: "phone=" + phone,
         type: "POST",
         success: function (result) {
+            $('#phoneModal').modal('hide');
         },
         error: function (e) {
         }
@@ -53,17 +55,16 @@ function loadParts(car_id) {
             for (var i = 0; i < parts.length; i++) {
                 tr += '<tr id=tr' + car_id + '>' +
                 '<td>' + parts[i].id + '</td>' +
-                '<td>' + '<img src="/image/get/' + parts[i].photos[0].id + '" width="100" height="100">' + '</td>' +
+                '<td>' + '<img src="/image/part/' + parts[i].photos[0].picture + '" width="100" height="100">' + '</td>' +
                 '<td>' + parts[i].group.name + '</td>' +
                 '<td>' + parts[i].type.name + '</td>' +
                 '<td>' + parts[i].condition + '</td>' +
                 '<td>' + parts[i].description + '</td>' +
                 '<td>' + parts[i].price + '</td>' +
-                '<td>' + parts[i].date.dayOfMonth + '.' +
-                parts[i].date.monthOfYear + '.' +
-                parts[i].date.year + '</td>' +
+                '<td>' + parts[i].date.dayOfMonth +'.'+ parts[i].date.monthOfYear +'.'+ parts[i].date.year + '</td>' +
                 '<td>' + '<button class="btn btn-warning" onclick="editPart(' + parts[i].id +
-                ')" data-toggle="modal" data-target="#editPartModal"><span class="glyphicon glyphicon-pencil"></span></button>' +
+                ')" data-toggle="modal" data-target="#editPartModal">' +
+                    '<span class="glyphicon glyphicon-pencil"></span></button>' +
                 '<button class="btn btn-danger" onclick="deletePart(' + parts[i].id +
                 ')"><span class="glyphicon glyphicon-trash"></span></button>' + '</td>'
                 + '</tr>';
@@ -89,48 +90,135 @@ function editPart(part_id) {
             $('input#price').val(part.price);
             $('input#catalogNumber').val(part.catalogNumber);
             $('textarea#description').val(part.description);
+
+            var arr = part.photos;
+            if (arr.length > 0) {
+                $('div#part_photo').empty();
+                arr.forEach(function (photo, i, arr) {
+                    var src = '/image/part/' + photo.picture;
+
+                    var img = $('<img />', {
+                        id: 'current_part_photo',
+                        src: src,
+                        name: photo.picture,
+                        width: 200,
+                        height: 150
+                    });
+
+                    var a = $('<a />', {
+                        class: "btn btn-danger",
+                        id: "delete_part_photo",
+                        name: photo.picture,
+                        onclick: "deletePartPhoto(this)",
+                        text: "Удалить"
+                    });
+
+                    img.appendTo($('#part_photo'));
+                    a.appendTo($('#part_photo'));
+
+                    $('div#part_photo').show();
+                    $('div#part_photo_form').hide();
+                })
+            } else {
+                $('div#part_photo').hide();
+                $('div#part_photo_form').show();
+            }
         },
-        error: function (e) {
+        error: function(e) {
 
         }
     })
 }
 
-function savePart() {
-    var data = $('#editPartForm').serialize();
+function deletePartPhoto(caller) {
+    var photo_name = $(caller).attr("name");
+    console.log(photo_name);
     $.ajax({
-        type: "post",
-        data: data,
-        url: "part/edit/" + $('input#id').val(),
+        url: "/image/delete/part/" + photo_name,
+        type: "POST",
+        success: function (s) {
+            if($('#part_photo').children().length == 2) {
+                $('#part_photo').children().empty();
+                $('div#part_photo').hide("slow");
+                $('div#part_photo_form').show("slow");
+            } else {
+                $('#part_photo').children().attr('name', s).remove();
+            }
+
+            console.info("deletePartPhoto success");
+        },
+        error: function (e) {
+            console.info("deletePArtPhoto error");
+        }
+    })
+}
+
+function savePart() {
+    var formData = new FormData($('#editPartForm')[0]);
+    var id = $('input#id').val();
+
+    console.log(formData);
+    $.ajax({
+        url: "/parts/part/edit/" + id,
+        type: 'POST',
+        data: formData,
+        async: false,
+        cache: false,
+        contentType: false,
+        processData: false,
         success: function (car_id) {
             loadParts(car_id);
             $('#editPartModal').modal('hide');
-            //alert("success");
         },
-        error: function (e) {
-
+        error: function(e) {
+            console.info("saveCar error");
         }
     });
+
+    //var data = $('#editPartForm').serialize();
+    //$.ajax({
+    //    type: "post",
+    //    data: data,
+    //    url: "/parts/part/edit/" + $('input#id').val(),
+    //    success: function (car_id) {
+    //        loadParts(car_id);
+    //        $('#editPartModal').modal('hide');
+    //        //alert("success");
+    //    },
+    //    error: function (e) {
+    //
+    //    }
+    //});
 }
 
 function addPart() {
-    var data = $('#addPartForm').serialize();
+
+    var formData = new FormData($('#addPartForm')[0]);
+    var car_id = $('input#car_id').val();
+
+
+    console.log(formData);
     $.ajax({
-        type: "post",
-        data: data,
-        url: "part/add",
+        url: "/parts/part/add/" + car_id,
+        type: 'POST',
+        data: formData,
+        async: false,
+        cache: false,
+        contentType: false,
+        processData: false,
         success: function (car_id) {
             loadParts(car_id);
             counterParts(car_id, 1);
             $('#addPartModal').modal('hide');
         },
-        error: function (e) {
-
+        error: function(e) {
+            console.info("saveCar error");
         }
     });
 }
 
 function updateCar(car) {
+    console.log(car);
     var id = car.id;
     $('span#car_name_' + id).text(car.brand.name + ' ' + car.model.name);
     $('small#car_year_' + id).text(car.year_from + '-' + car.year_to);
@@ -138,24 +226,61 @@ function updateCar(car) {
     $('dd#car_volume_' + id).text(car.volume);
     $('dd#car_body_' + id).text(car.body.name);
     $('dd#car_kpp_' + id).text(car.kpp.name);
+    var image;
+    if(car.photo != null) {
+        console.info('!null');
+        image = '/image/car/' + car.photo;
+    } else {
+        console.info('null');
+        image = "/resources/image/no_photo.png";
+    }
+    $('img#car_photo_' + id).attr('src', image);
 }
 
 function saveCar() {
-    var data = $('#editCarForm').serialize();
+
+    var formData = new FormData($('#editCarForm')[0]);
+    console.log(formData);
     $.ajax({
-        type: "post",
-        data: data,
         url: "/car/edit/" + $('input#id_car').val(),
-        dataType: "json",
+        type: 'POST',
+        data: formData,
+        async: false,
+        cache: false,
+        contentType: false,
+        processData: false,
         success: function (car) {
             updateCar(car);
             $('#editCarModal').modal('hide');
-            //alert("success");
+            console.info("saveCar success");
+            //alert(returndata);
         },
-        error: function (e) {
-
+        error: function(e) {
+            console.info("saveCar error");
         }
     });
+
+
+
+
+
+
+
+    //var data = $('#editCarForm').serialize();
+    //$.ajax({
+    //    type: "post",
+    //    data: data,
+    //    url: "/car/edit/" + $('input#id_car').val(),
+    //    dataType: "json",
+    //    success: function (car) {
+    //        updateCar(car);
+    //        $('#editCarModal').modal('hide');
+    //        //alert("success");
+    //    },
+    //    error: function (e) {
+    //
+    //    }
+    //});
 }
 
 function editCar(car_id) {
@@ -164,6 +289,7 @@ function editCar(car_id) {
         type: "POST",
         dataType: "json",
         success: function (car) {
+            console.log(car);
             $('input#id_car').val(car.id);
             $('select#brand').val(car.brand.id);
             loadCarModel();
@@ -174,6 +300,16 @@ function editCar(car_id) {
             $('select#kpp').val(car.kpp.id);
             $('input#year_from').val(car.year_from);
             $('input#year_to').val(car.year_to);
+            if(car.photo != null) {
+                var src = '/image/car/' + car.photo;
+                $('#current_photo').attr("src", src);
+                $('#current_photo').attr("name", car.photo);
+                $('div#car_photo').show();
+                $('div#car_photo_form').hide();
+            } else {
+                $('div#car_photo').hide();
+                $('div#car_photo_form').show();
+            }
         },
         error: function (e) {
 
@@ -196,6 +332,26 @@ function deletePart(part_id) {
             }
         })
     }
+}
+
+///////////////////////////////
+////////////ФОТО///////////////////
+///////////////////////////////
+function deleteCarPhoto() {
+    var photo_name = $('img#current_photo').attr('name');
+    console.log(photo_name);
+    $.ajax({
+        url: "/image/delete/car/" + photo_name,
+        type: "POST",
+        success: function (s) {
+            $('div#car_photo').hide("slow");
+            $('div#car_photo_form').show("slow");
+            console.info("deleteCarPhoto success");
+        },
+        error: function (e) {
+            console.info("deleteCarPhoto error");
+        }
+    })
 }
 
 $(function () {
@@ -227,41 +383,41 @@ $(function () {
 });
 
 function loadPartType() {
-    $.ajax({
-        url: "/car/part_types",
-        data: 'groupId=' + $("#group").val(),
-        type: "POST",
-        dataType: "json",
-        success: function (partTypes) {
-            var options = '';
-            for (var i = 0; i < partTypes.length; i++) {
-                options += '<option value="' + partTypes[i].id + '">' + partTypes[i].name + '</option>';
-            }
-            $("select#type").html(options);
-        },
-        error: function (e) {
-
-        }
-    })
+    //$.ajax({
+    //    url: "/car/part_types",
+    //    data: 'groupId=' + $("#group").val(),
+    //    type: "POST",
+    //    dataType: "json",
+    //    success: function (partTypes) {
+    //        var options = '';
+    //        for (var i = 0; i < partTypes.length; i++) {
+    //            options += '<option value="' + partTypes[i].id + '">' + partTypes[i].name + '</option>';
+    //        }
+    //        $("select#type").html(options);
+    //    },
+    //    error: function (e) {
+    //
+    //    }
+    //})
 }
 
 function loadCarModel() {
-    $.ajax({
-        url: "/car/models",
-        data: 'brandId=' + $("#brand").val(),
-        type: "POST",
-        dataType: "json",
-        success: function (models) {
-            var options = '';
-            for (var i = 0; i < models.length; i++) {
-                options += '<option value="' + models[i].id + '">' + models[i].name + '</option>';
-            }
-            $("select#model").html(options);
-        },
-        error: function (e) {
-
-        }
-    })
+    //$.ajax({
+    //    url: "/car/models",
+    //    data: 'brandId=' + $("#brand").val(),
+    //    type: "POST",
+    //    dataType: "json",
+    //    success: function (models) {
+    //        var options = '';
+    //        for (var i = 0; i < models.length; i++) {
+    //            options += '<option value="' + models[i].id + '">' + models[i].name + '</option>';
+    //        }
+    //        $("select#model").html(options);
+    //    },
+    //    error: function (e) {
+    //
+    //    }
+    //})
 }
 
 //

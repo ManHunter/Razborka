@@ -19,23 +19,18 @@ public class PhoneServiceImpl implements PhoneService {
     @Autowired
     private PhoneDao phoneDao;
 
-
-    @Override
     public void savePhone(Phone phone) {
         phoneDao.save(phone);
     }
 
-    @Override
     public void updatePhone(Phone phone) {
         phoneDao.update(phone);
     }
 
-    @Override
     public void deletePhone(int id) {
         phoneDao.deleteById(id);
     }
 
-    @Override
     public List<Phone> getPhoneByUserId(int user_id) {
         return phoneDao.getPhoneByUserId(user_id);
     }

@@ -3,6 +3,33 @@
 <head>
     <title>Добавить запчасть</title>
     <%@ include file="../layout/header.jsp" %>
+
+    <script>
+        $(document).ready(function () {
+            $('#model').chained('#brand');
+
+            if ($('div#photo_row').children().length > 0) {
+                $('div#upload_photo').hide();
+            }
+        });
+
+        function deletePhoto(photo) {
+            console.log(photo);
+            $.ajax({
+                url: "/image/delete/car/" + photo,
+                type: "POST",
+                success: function (s) {
+                    $('div#photo_row').empty();
+                    $('div#upload_photo').show("slow");
+                    console.info("deleteCarPhoto success");
+                },
+                error: function (e) {
+                    console.info("deleteCarPhoto error");
+                }
+            })
+        }
+
+    </script>
 </head>
 <body>
 <div class="container">
@@ -33,16 +60,15 @@
         </div>
     </div>
 
-    <div class="row">
-        <form:form action="/profile/seller/parts/car/add" method="post" modelAttribute="part" enctype="multipart/form-data">
-
+    <form:form action="/cars/edit/${car.id}" method="post" modelAttribute="car" enctype="multipart/form-data">
+        <div class="row">
             <div class="col-md-5">
                 <h2>Информация об автомобиле</h2>
                 <hr>
                 <div class="well">
                     <div class="form-group">
                         <label for="brand">Марка авто: </label>
-                        <form:select class="form-control" path="car.brand.id" id="brand">
+                        <form:select class="form-control" path="brand.id" id="brand">
                             <form:option value="0" label="Выберите марку"/>
                             <form:options itemValue="id" itemLabel="name" items="${brands}"/>
                         </form:select>
@@ -50,20 +76,22 @@
 
                     <div class="form-group">
                         <label for="model">Модель авто: </label>
-                        <form:select class="form-control" path="car.model.id" id="model">
+                        <form:select class="form-control" path="model.id" id="model">
                             <form:option value="0" label="Выберите модель"/>
-                            <form:options itemValue="id" itemLabel="name" items="${model}"/>
+                            <c:forEach items="${models}" var="model">
+                                <form:option value="${model.id}" label="${model.name}" class="${model.brand.id}"/>
+                            </c:forEach>
                         </form:select>
                     </div>
 
                     <div class="form-group">
                         <label for="volume">Объем двигателя: </label>
-                        <form:input class="form-control" path="car.volume" id="volume"/>
+                        <form:input class="form-control" path="volume" id="volume" placeholder="Введите объем"/>
                     </div>
 
                     <div class="form-group">
                         <label for="fuel">Тип топлива: </label>
-                        <form:select class="form-control" path="car.fuel.id" id="fuel">
+                        <form:select class="form-control" path="fuel.id" id="fuel">
                             <form:option value="0" label="Выберите тип топлива"/>
                             <form:options itemValue="id" itemLabel="name" items="${fuels}"/>
                         </form:select>
@@ -71,7 +99,7 @@
 
                     <div class="form-group">
                         <label for="body">Кузов: </label>
-                        <form:select class="form-control" path="car.body.id" id="body">
+                        <form:select class="form-control" path="body.id" id="body">
                             <form:option value="0" label="Выберите кузов"/>
                             <form:options itemValue="id" itemLabel="name" items="${bodies}"/>
                         </form:select>
@@ -79,7 +107,7 @@
 
                     <div class="form-group">
                         <label for="kpp">КПП: </label>
-                        <form:select class="form-control" path="car.kpp.id" id="kpp">
+                        <form:select class="form-control" path="kpp.id" id="kpp">
                             <form:option value="0" label="Выберите кпп"/>
                             <form:options itemValue="id" itemLabel="name" items="${kpps}"/>
                         </form:select>
@@ -87,70 +115,41 @@
 
                     <div class="form-group">
                         <label for="year_from">Год выпуска с: </label>
-                        <form:input class="form-control" path="car.year_from" id="year_from"/>
+                        <form:input class="form-control" path="year_from" id="year_from"/>
                     </div>
 
                     <div class="form-group">
                         <label for="year_to">Год выпуска по: </label>
-                        <form:input class="form-control" path="car.year_to" id="year_to"/>
+                        <form:input class="form-control" path="year_to" id="year_to"/>
+                    </div>
+
+                    <div id="photo_row" class="row">
+                        <c:if test="${car.photo ne null}">
+                            <div class="col-sm-6 col-md-4">
+                                <div class="thumbnail">
+                                    <form:hidden path="photo"/>
+                                    <img src="/image/car/${car.photo}" alt="${car.brand.name} ${car.model.name}">
+
+                                    <div class="caption">
+                                        <a onclick="deletePhoto('${car.photo}')" class="btn btn-danger" role="button">
+                                            <span class="glyphicon glyphicon-remove"></span>Удалить
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:if>
+                    </div>
+                    <div id="upload_photo" class="form-group">
+                        <label for="car_image">Фото автомобиля:</label>
+                        <input class="btn btn-default btn-file" id="car_image" name="car_image_file" type="file"/>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-5">
-                <h2>Информация о з/ч</h2>
-                <hr>
-                <div class="well">
-                    <div class="form-group">
-                        <label for="group">Группа з/ч: </label>
-                        <form:select class="form-control" path="group.id" id="group">
-                            <form:option value="0" label="Выберите группу"/>
-                            <form:options itemValue="id" itemLabel="name" items="${partGroups}"/>
-                        </form:select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="type">Тип з/ч: </label>
-                        <form:select class="form-control" path="type.id" id="type">
-                            <form:option value="0" label="Выберите тип"/>
-                            <form:options itemValue="id" itemLabel="name" items="${partTypes}"/>
-                        </form:select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="condition">Состояние: </label>
-                        <form:select class="form-control" path="condition" id="condition">
-                            <form:option value="0" label="Состояние з/ч"/>
-                            <form:option value="НОВЫЙ" label="Новый"/>
-                            <form:option value="Б/У" label="Б/У"/>
-                        </form:select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="price">Цена: </label>
-                        <form:input class="form-control" path="price" id="price"/>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="catalogNumber">Номер по каталогу: </label>
-                        <form:input class="form-control" path="catalogNumber" id="catalogNumber"/>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Описание: </label>
-                        <form:textarea rows="8" class="form-control" path="description" id="description"/>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="image">Фото:</label>
-                        <input class="btn btn-default btn-file" id="image" name="files[]" type="file" multiple="multiple"  />
-                    </div>
-                </div>
-            </div>
+        </div>
+        <div class="row">
             <input type="submit" class="btn btn-success"/>
-        </form:form>
-    </div>
-
+        </div>
+    </form:form>
 </div>
 </body>
 </html>

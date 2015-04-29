@@ -36,4 +36,13 @@ public class CarDaoImpl extends AbstractDao<Car> implements CarDao {
                 .add(Restrictions.eq("user.id", user_id));
         return criteria.list();
     }
+
+    @Override
+    public Car getCarByPhoto(String photo_name) {
+        Car car = (Car) getSession().createCriteria(Car.class)
+                .add(Restrictions.eq("photo", photo_name))
+                .setMaxResults(1)
+                .uniqueResult();
+        return car;
+    }
 }

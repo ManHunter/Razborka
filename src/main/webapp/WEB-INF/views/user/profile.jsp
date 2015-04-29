@@ -10,7 +10,7 @@
 <head>
     <title>Продавец</title>
 
-    <%@ include file="layout/header.jsp" %>
+    <%@ include file="../layout/header.jsp" %>
 </head>
 <body>
 <div class="container">
@@ -69,26 +69,6 @@
                 <div class="form-group">
                     <label for="password">Password: </label>
                     <form:input type="text" class="form-control" path="password" id="password" value="пароль"/>
-                </div>
-                <div class="form-group">
-                    <label for="contry">Contry: </label>
-                    <form:input type="text" class="form-control" path="contry" id="contry" value="Беларусь"/>
-                </div>
-                <div class="form-group">
-                    <label for="city">City: </label>
-                    <form:input type="text" class="form-control" path="city" id="city" value="Полоцк"/>
-                </div>
-                <div class="form-group">
-                    <label for="address">Address: </label>
-                    <form:input type="text" class="form-control" path="address" id="address" value="Невельская д.59"/>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone: </label>
-                    <form:input type="text" class="form-control" path="phone" id="phone" value="7219827"/>
-                </div>
-                <div class="form-group">
-                    <label for="role">Role: </label>
-                    <form:input type="text" class="form-control" path="role" id="role" value="SELLER"/>
                 </div>
 
                 <input class="btn btn-default" type="submit" value="Изменить"/>

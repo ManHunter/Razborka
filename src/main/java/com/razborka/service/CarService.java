@@ -1,6 +1,7 @@
 package com.razborka.service;
 
 import com.razborka.model.Car;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -9,9 +10,13 @@ import java.util.List;
  */
 public interface CarService {
 
-    public void saveCar(Car engine);
+    public void saveCar(Car car);
 
-    public void updateCar(Car engine);
+    public void saveCar(Car car, MultipartFile file, String path);
+
+    public void updateCar(Car car);
+
+    public void updateCar(Car car, MultipartFile file, String path);
 
     public void deleteCar(int id);
 
@@ -22,4 +27,6 @@ public interface CarService {
     public List<Car> getAllUserCars(int user_id);
 
     public int countPartByCarId(int car_id);
+
+    public Car getCarByPhoto(String photo_name);
 }

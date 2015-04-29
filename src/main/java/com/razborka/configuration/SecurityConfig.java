@@ -39,13 +39,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/login").anonymous();
         http.authorizeRequests()
-                .antMatchers("/customer/**").access("hasAnyRole('CUSTOMER', 'ADMIN')");
+                .antMatchers("/customer/**").access("hasAnyRole('customer', 'admin')");
         http.authorizeRequests()
-                .antMatchers("/admin/**").access("hasRole('ADMIN')");
+                .antMatchers("/admin/**").access("hasRole('admin')");
         http.authorizeRequests()
-                .antMatchers("/image/**", "/catalog**").access("hasAnyRole('ADMIN', 'SELLER', 'CUSTOMER')");
+                .antMatchers("/image/**", "/catalog**").access("hasAnyRole('admin', 'seller', 'customer')");
         http.authorizeRequests()
-                .antMatchers("/profile/**").access("hasAnyRole('ADMIN', 'CUSTOMER', 'SELLER')");
+                .antMatchers("/profile/**").access("hasAnyRole('admin', 'customer', 'seller')");
 
         // включаем защиту от CSRF атак
         http.csrf()

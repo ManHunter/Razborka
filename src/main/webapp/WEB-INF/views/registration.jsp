@@ -29,19 +29,19 @@
 
                 <div class="radio">
                     <label>
-                        <input type="radio" class="accountType" name="accountType" value="SELLER" checked>
+                        <input type="radio" class="accountType" name="accountType" value="seller" checked>
                         Разборка, Магазин
                     </label>
                 </div>
                 <div class="radio">
                     <label>
-                        <input type="radio" class="accountType" name="accountType" value="STO">
+                        <input type="radio" class="accountType" name="accountType" value="sto">
                         СТО
                     </label>
                 </div>
                 <div class="radio">
                     <label>
-                        <input type="radio" class="accountType" name="accountType" value="CUSTOMER">
+                        <input type="radio" class="accountType" name="accountType" value="customer">
                         Частное лицо
                     </label>
                 </div>

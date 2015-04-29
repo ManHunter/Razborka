@@ -16,13 +16,11 @@ import java.util.List;
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     @Transactional
-    @Override
     public User getUserByName(String email) {
         User user = (User) getSession().createCriteria(User.class)
                 .add(Restrictions.eq("email", email))
                 .setMaxResults(1)
                 .uniqueResult();
-        System.out.println("================ UserDaoImpl email - " + user.getEmail() + " pass " + user.getPassword());
         return user;
     }
 }

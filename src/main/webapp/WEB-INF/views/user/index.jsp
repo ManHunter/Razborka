@@ -28,7 +28,7 @@
                         <a href="/profile/seller/">Учетная запись</a>
                     </li>
                     <li>
-                        <a href="/profile/seller/parts">Запчасти</a>
+                        <a href="/user_cars">Запчасти</a>
                     </li>
                     <li>
                         <a href="/profile/seller/orders">Заявки</a>

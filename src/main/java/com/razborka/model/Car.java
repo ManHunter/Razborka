@@ -3,6 +3,7 @@ package com.razborka.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -26,7 +27,8 @@ public class Car implements Serializable {
     private Kpp kpp;
     private int year_from;
     private int year_to;
-    private LocalDate date;
+    private String photo;
+    private LocalDateTime date;
 
     private List<Order> orders;
     private List<Part> parts;
@@ -149,15 +151,24 @@ public class Car implements Serializable {
         this.parts = parts;
     }
 
+    @Column(name = "photo", nullable = true, unique = false)
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "date", nullable = true)
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     @Temporal(TemporalType.TIMESTAMP)
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

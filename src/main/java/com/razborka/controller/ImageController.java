@@ -1,5 +1,8 @@
 package com.razborka.controller;
 
+import com.razborka.model.Car;
+import com.razborka.model.Photo;
+import com.razborka.service.CarService;
 import com.razborka.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -7,9 +10,11 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -23,14 +28,18 @@ public class ImageController {
     @Autowired
     private PhotoService photoService;
 
-    @RequestMapping(value = "/get/{image_id}", method = RequestMethod.GET)
-    public void get(HttpServletResponse response, HttpServletRequest request, @PathVariable int image_id){
-        String filename = photoService.getPhotoById(image_id).getPicture();
+    @Autowired
+    private CarService carService;
+
+    @RequestMapping(value = "/part/{image_name:.+}", method = RequestMethod.GET)
+    public void getPart(HttpServletResponse response, HttpServletRequest request, @PathVariable String image_name){
         //File file = new File(request.getServletContext().getRealPath("/") + "resources\\image\\part" + filename);
+        System.out.println("====" + image_name);
         try {
-            FileInputStream inputStream = new FileInputStream(request.getServletContext().getRealPath("/") + "resources\\image\\part\\" + filename);
+            FileInputStream inputStream = new FileInputStream(
+                    request.getServletContext().getRealPath("/") + "resources\\image\\part\\" + image_name);
             response.setContentType("image/jpg");
-            response.setHeader("Content-disposition", "attachment; filename=\""+filename+"\"");
+            response.setHeader("Content-disposition", "attachment; filename=\""+image_name+"\"");
             FileCopyUtils.copy(inputStream, response.getOutputStream());
         }catch (IOException e) {
             // TODO Auto-generated catch block
@@ -38,6 +47,54 @@ public class ImageController {
         }
     }
 
+    @RequestMapping(value = "/car/{image_name:.+}", method = RequestMethod.GET)
+    public void getCar(HttpServletResponse response, HttpServletRequest request, @PathVariable String image_name) {
+        try {
+            FileInputStream inputStream = new FileInputStream(
+                    request.getServletContext().getRealPath("/") + "resources\\image\\car\\" + image_name);
+            response.setContentType("image/jpg");
+            response.setHeader("Content-disposition", "attachment; filename=\""+image_name+"\"");
+            FileCopyUtils.copy(inputStream, response.getOutputStream());
+        }catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping(value = "/delete/car/{image_name:.+}", method = RequestMethod.POST)
+    public void deleteCarImage(HttpServletRequest request,
+                            HttpServletResponse response,
+                            @PathVariable("image_name") String image_name) {
+        try {
+            File file = new File(request.getServletContext().getRealPath("/") + "resources\\image\\car\\" + image_name);
+            file.delete();
+            Car car = carService.getCarByPhoto(image_name);
+            car.setPhoto(null);
+            carService.updateCar(car);
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write("OK");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @RequestMapping(value = "/delete/part/{image_name:.+}", method = RequestMethod.POST)
+    public void deletePartImage(HttpServletRequest request,
+                            HttpServletResponse response,
+                            @PathVariable("image_name") String image_name) {
+        try {
+            File file = new File(request.getServletContext().getRealPath("/") + "resources\\image\\part\\" + image_name);
+            file.delete();
+            Photo photo = photoService.getPhotoByImageName(image_name);
+            photoService.deletePhoto(photo.getId());
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write("OK");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 //    @RequestMapping(method = RequestMethod.GET)
 //    public String index(ModelMap model) {

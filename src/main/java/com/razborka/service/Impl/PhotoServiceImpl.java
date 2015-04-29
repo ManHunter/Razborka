@@ -27,48 +27,27 @@ public class PhotoServiceImpl implements PhotoService {
     @Autowired
     private PhotoDao photoDao;
 
-    @Override
     public void savePhoto(Photo photo) {
         photoDao.save(photo);
     }
 
-    @Override
-    public void savePhotos(List<MultipartFile> files, Part part, String path) {
-        Photo photo = new Photo();
-        try {
-            for (MultipartFile file : files) {
-                if (!file.isEmpty()) {
-                    String filename = generateFilename(file.getOriginalFilename());
-                    File f = new File(path + "resources\\image\\part\\" + filename);
-                    FileUtils.writeByteArrayToFile(f, file.getBytes());
-                    photo.setPicture(filename);
-                    photo.setPart(part);
-                    savePhoto(photo);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error save photo: " + e.getMessage());
-        }
-    }
-
-    @Override
     public void deletePhoto(int id) {
         photoDao.deleteById(id);
     }
 
-    @Override
     public List<Photo> getAllPhoto() {
         return photoDao.getAll();
     }
 
-    @Override
     public Photo getPhotoById(int id) {
         return photoDao.get(id);
     }
 
-    public String generateFilename(String originalFilename) {
-        Long nameRandom = Calendar.getInstance().getTimeInMillis();
-        originalFilename = nameRandom + "_" + originalFilename;
-        return originalFilename;
+    public Photo getPhotoByImageName(String imageName) {
+        return photoDao.getPhotoByImageName(imageName);
+    }
+
+    public List<Photo> getAllPhotoByPartId(int part_id) {
+        return photoDao.getAllPhotoByPartId(part_id);
     }
 }

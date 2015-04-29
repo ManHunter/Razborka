@@ -10,4 +10,5 @@ import java.util.List;
 public interface CarDao extends Dao<Car> {
     public int countPartByCarId(int car_id);
     public List<Car> getAllUserCars(int user_id);
+    public Car getCarByPhoto(String photo_name);
 }

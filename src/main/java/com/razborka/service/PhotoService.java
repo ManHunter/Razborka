@@ -13,12 +13,14 @@ public interface PhotoService {
 
     public void savePhoto(Photo part);
 
-    public void savePhotos(List<MultipartFile> files, Part part, String path);
-
     public void deletePhoto(int id);
 
     public List<Photo> getAllPhoto();
 
     public Photo getPhotoById(int id);
+
+    public Photo getPhotoByImageName(String imageName);
+
+    public List<Photo> getAllPhotoByPartId(int part_id);
 
 }

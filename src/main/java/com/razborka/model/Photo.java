@@ -15,7 +15,6 @@ public class Photo implements Serializable {
 
     private int id;
     private Part part;
-    private User user;
     private String picture;
 
     @Id
@@ -37,16 +36,6 @@ public class Photo implements Serializable {
 
     public void setPart(Part part) {
         this.part = part;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true, unique = false)
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     @Column(name = "picture")

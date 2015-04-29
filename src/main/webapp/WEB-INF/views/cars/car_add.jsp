@@ -1,15 +1,15 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Admin
-  Date: 17.04.2015
-  Time: 14:33
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Редактирование</title>
-    <%@include file="../layout/header.jsp" %>
+    <title>Добавить запчасть</title>
+    <%@ include file="../layout/header.jsp" %>
+
+    <script>
+        $(document).ready(function () {
+            $('#model').chained('#brand');
+            $('#type').chained('#group');
+        });
+    </script>
 </head>
 <body>
 <div class="container">
@@ -40,15 +40,12 @@
         </div>
     </div>
 
-    <div class="row">
-        <form:form action="edit" method="post" modelAttribute="part">
-
-
+    <form:form action="/parts/car/add" method="post" modelAttribute="part" enctype="multipart/form-data">
+        <div class="row">
             <div class="col-md-5">
-                <h2>Информация о з/ч</h2>
+                <h2>Информация об автомобиле</h2>
                 <hr>
                 <div class="well">
-
                     <div class="form-group">
                         <label for="brand">Марка авто: </label>
                         <form:select class="form-control" path="car.brand.id" id="brand">
@@ -61,13 +58,15 @@
                         <label for="model">Модель авто: </label>
                         <form:select class="form-control" path="car.model.id" id="model">
                             <form:option value="0" label="Выберите модель"/>
-                            <form:options itemValue="id" itemLabel="name" items="${model}"/>
+                            <c:forEach items="${models}" var="model">
+                                <form:option value="${model.id}" label="${model.name}" class="${model.brand.id}"/>
+                            </c:forEach>
                         </form:select>
                     </div>
 
                     <div class="form-group">
                         <label for="volume">Объем двигателя: </label>
-                        <form:input class="form-control" path="car.volume" id="volume"/>
+                        <form:input class="form-control" path="car.volume" id="volume" placeholder="Введите объем"/>
                     </div>
 
                     <div class="form-group">
@@ -103,19 +102,20 @@
                         <label for="year_to">Год выпуска по: </label>
                         <form:input class="form-control" path="car.year_to" id="year_to"/>
                     </div>
+
+                    <div class="form-group">
+                        <label for="car_image">Фото автомобиля:</label>
+                        <input class="btn btn-default btn-file" id="car_image" name="car_image_file" type="file"/>
+                    </div>
                 </div>
             </div>
 
             <div class="col-md-5">
-                <h2>Информация об автомобиле</h2>
+                <h2>Информация о з/ч</h2>
                 <hr>
                 <div class="well">
                     <div class="form-group">
-                        <label for="id">ID: </label>
-                        <form:input class="form-control" path="id" readonly="true" disabled="true"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="group">Группа з/ч: </label>
+                        <label for="group">Группа запчасти: </label>
                         <form:select class="form-control" path="group.id" id="group">
                             <form:option value="0" label="Выберите группу"/>
                             <form:options itemValue="id" itemLabel="name" items="${partGroups}"/>
@@ -123,10 +123,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="type">Тип з/ч: </label>
+                        <label for="type">Тип запчасти: </label>
                         <form:select class="form-control" path="type.id" id="type">
                             <form:option value="0" label="Выберите тип"/>
-                            <form:options itemValue="id" itemLabel="name" items="${partTypes}"/>
+                            <c:forEach items="${partTypes}" var="pt">
+                                <form:option value="${pt.id}" label="${pt.name}" class="${pt.group.id}"/>
+                            </c:forEach>
                         </form:select>
                     </div>
 
@@ -151,14 +153,21 @@
 
                     <div class="form-group">
                         <label for="description">Описание: </label>
-                        <form:textarea rows="5" class="form-control" path="description" id="description"/>
+                        <form:textarea rows="8" class="form-control" path="description" id="description"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="part_image">Фото запчасти:</label>
+                        <input class="btn btn-default btn-file" id="part_image" name="part_image_files[]" type="file"
+                               multiple="multiple"/>
                     </div>
                 </div>
             </div>
-    </div>
-    <input type="submit" class="btn btn-success"/>
+        </div>
+        <div class="row">
+            <input type="submit" class="btn btn-success"/>
+        </div>
     </form:form>
 </div>
-
 </body>
 </html>
