@@ -5,7 +5,7 @@
     <%@ include file="../layout/header.jsp" %>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('a[data-toggle=modal], button[data-toggle=modal]').click(function () {
                 var data_id = '';
                 if (typeof $(this).data('car-id') !== 'undefined') {
@@ -16,7 +16,7 @@
         })
 
         function deleteCar(car_id) {
-            if(confirm("Вы уверены? Удаление авто приведет к удалению всех связанных запчастей.")) {
+            if (confirm("Вы уверены? Удаление авто приведет к удалению всех связанных запчастей.")) {
                 $.ajax({
                     url: "/cars/delete/" + car_id,
                     type: "POST",
@@ -33,36 +33,12 @@
 </head>
 <body>
 <div class="container">
-    <div class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a href="#" class="navbar-brand">РАЗБОРКА.by</a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href="/profile/seller/">Кабинет</a>
-                    </li>
-                    <li>
-                        <a href="/profile/seller/">Учетная запись</a>
-                    </li>
-                    <li>
-                        <a href="/profile/seller/parts">Запчасти</a>
-                    </li>
-                    <li>
-                        <a href="/profile/seller/orders">Заявки</a>
-                    </li>
-                    <li>
-                        <a href="/">Сайт</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    <%@include file="../layout/navbar_profile.jsp" %>
 
     <div class="row">
         <div class="col-md-4">
-            <a href="/profile/car/add" class="btn btn-success btn-lg">Добавить</a>
+            <a href="/profile/car/add" class="btn btn-success btn-lg">
+                <span class="glyphicon glyphicon-plus"></span> Добавить</a>
             <br><br>
         </div>
     </div>
@@ -72,19 +48,27 @@
             <div class="col-md-12">
                 <div class="well">
                     <div class="row">
-                        <div class="col-md-8">
-                            <h3><span id="car_name_${car.id}">${car.brand.name} ${car.model.name}</span>
+                        <div class="col-md-9">
+                            <h3 style="margin-top: 0px;">
+                                <span id="car_name_${car.id}">${car.brand.name} ${car.model.name}</span>
                                 <small id="car_year_${car.id}">${car.year_from}-${car.year_to}</small>
                             </h3>
+                        </div>
+                        <div class="col-md-3">
+                            <h4>
+                                Добавлен: <joda:format value="${car.date}" pattern="dd.MM.yyyy HH:mm"/>
+                            </h4>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-6 col-md-2">
                             <a href="/image/car/${car.photo}" class="thumbnail">
-                                <img id="car_photo_${car.id}" src="<c:if test="${car.photo eq null}"><c:url value="/resources/image/no_photo.png"/></c:if><c:if test="${car.photo ne null}">/image/car/${car.photo}</c:if>" alt="${car.brand.name} ${car.model.name}">
+                                <img id="car_photo_${car.id}"
+                                     src="<c:if test="${car.photo eq null}"><c:url value="/resources/image/no_photo.png"/></c:if><c:if test="${car.photo ne null}">/image/car/${car.photo}</c:if>"
+                                     alt="${car.brand.name} ${car.model.name}">
                             </a>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <dl class="dl-horizontal">
                                 <dt>Тип топлива</dt>
                                 <dd id="car_fuel_${car.id}">${car.fuel.name}</dd>
@@ -96,12 +80,40 @@
                                 <dd id="car_kpp_${car.id}">${car.kpp.name}</dd>
                             </dl>
                         </div>
+                        <div class="col-md-4">
+                            <label>Описание:</label>
+
+                            <p>${car.description}</p>
+                        </div>
                         <div class="col-md-3">
-                            <a class="btn btn-success" onclick="loadParts(${car.id})" href="/profile/parts/${car.id}">Просмотреть запчасти
-                                <span class="badge" id="partCount_${car.id}">${fn:length(car.parts)}</span></a>
-                            <a class="btn btn-danger" href="/profile/part/add/${car.id}">Добавить запчасть</a>
-                            <a class="btn btn-danger" href="/profile/car/edit/${car.id}">Редактировать</a>
-                            <a class="btn btn-danger" onclick="deleteCar('${car.id}')">Удалить</a>
+                            <div class="form-group">
+                                <a class="btn btn-success pull-right" onclick="loadParts(${car.id})"
+                                   href="/profile/parts/${car.id}">Просмотреть
+                                    запчасти
+                                    <span class="badge" id="partCount_${car.id}">${fn:length(car.parts)}</span></a><br><br>
+
+                                <div class="btn-group pull-right">
+                                    <button type="button" class="btn btn-default dropdown-toggle"
+                                            data-toggle="dropdown"><span
+                                            class="glyphicon glyphicon-th-list"></span> Действия <span class="caret"></span></button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="/profile/part/add/${car.id}"><span
+                                                class="glyphicon glyphicon-plus"></span> Добавить запчасть</a></li>
+                                        <li><a href="/profile/car/edit/${car.id}"><span
+                                                class="glyphicon glyphicon-edit"></span> Редактировать</a></li>
+                                        <li><a onclick="deleteCar('${car.id}')"><span
+                                                class="glyphicon glyphicon-remove"></span> Удалить</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+
+                                <%--<a class="btn btn-danger" href="/profile/part/add/${car.id}">--%>
+                                <%--<span class="glyphicon glyphicon-plus"></span> Добавить запчасть</a>--%>
+                                <%--<a class="btn btn-danger" href="/profile/car/edit/${car.id}">--%>
+                                <%--<span class="glyphicon glyphicon-edit"></span> Редактировать</a>--%>
+                                <%--<a class="btn btn-danger" onclick="deleteCar('${car.id}')">--%>
+                                <%--<span class="glyphicon glyphicon-remove"></span> Удалить</a>--%>
                         </div>
                     </div>
                 </div>

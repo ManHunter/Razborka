@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface AddressDao extends Dao<Address> {
     public List<Address> getAddressByUserId(int user_id);
+    public List<Address> getAddressByUserRole(String role);
+    public List<String> getAllCities();
 }

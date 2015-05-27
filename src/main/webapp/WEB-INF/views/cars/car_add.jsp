@@ -13,32 +13,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a href="#" class="navbar-brand">РАЗБОРКА.by</a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href="/profile/seller/">Кабинет</a>
-                    </li>
-                    <li>
-                        <a href="/profile/seller/">Учетная запись</a>
-                    </li>
-                    <li>
-                        <a href="/profile/seller/parts">Запчасти</a>
-                    </li>
-                    <li>
-                        <a href="/profile/seller/orders">Заявки</a>
-                    </li>
-                    <li>
-                        <a href="/">Сайт</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    <%@include file="../layout/navbar_profile.jsp" %>
 
     <form:form action="/parts/car/add" method="post" modelAttribute="part" enctype="multipart/form-data">
         <div class="row">
@@ -103,10 +78,17 @@
                         <form:input class="form-control" path="car.year_to" id="year_to"/>
                     </div>
 
+                    <security:authorize access="hasRole('STO')">
+                    <div class="form-group">
+                        <label for="description">Описание: </label>
+                        <form:textarea rows="5" class="form-control" path="car.description" id="description"/>
+                    </div>
+
                     <div class="form-group">
                         <label for="car_image">Фото автомобиля:</label>
                         <input class="btn btn-default btn-file" id="car_image" name="car_image_file" type="file"/>
                     </div>
+                    </security:authorize>
                 </div>
             </div>
 

@@ -9,14 +9,6 @@ import java.util.List;
  */
 public interface ServiceDao extends Dao<Service> {
 
-//    public void saveService(Service service);
-//
-//    public void updateService(Service service);
-//
-//    public void deleteService(int id);
-//
-//    public List<Service> getAllService();
-//
-//    public Service getServiceById(int id);
+    public List<Service> getAllUserServices(int user_id);
 
 }

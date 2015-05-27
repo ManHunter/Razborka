@@ -9,14 +9,15 @@
 <html>
 <head>
     <title>Управление категорией "Марка авто"</title>
-    <%@include file="../layout/header.jsp"%>
+    <%@include file="../layout/header.jsp" %>
 </head>
 <body>
 <div class="container">
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-9">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -35,37 +36,39 @@
     </nav>
 
     <div class="row">
-        <div class="col-md-6">
-            <h3>Управление категорией <span class="label label-default">Марка</span></h3>
-            <form:form modelAttribute="brand" method="post" class="form-inline">
-                <div class="form-group">
-                    <label for="name">Название марки</label>
-                    <form:input class="form-control" path="name" id="name" />
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Управление категорией &laquo;Марка&raquo;</h3>
                 </div>
-                <button class="btn btn-success" type="submit">Добавить</button>
-            </form:form>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-5">
-            <table class="table table-striped">
-                <tr>
-                    <th>ID</th>
-                    <th>Марка</th>
-                    <th>Операции</th>
-                </tr>
-                <c:forEach items="${brands}" var="rt">
-                    <tr>
-                        <td>${rt.id}</td>
-                        <td>${rt.name}</td>
-                        <td>
-                            <a href="/admin/category/brand/edit?id=${rt.id}" class="btn btn-warning">Редактировать</a>
-                            <a href="/admin/category/brand/delete?id=${rt.id}" class="btn btn-danger">Удалить</a>
-                        </td>
-                    </tr>
-                </c:forEach>
-            </table>
+                <div class="panel-body">
+                    <form:form modelAttribute="brand" method="post" class="form-inline">
+                        <div class="form-group">
+                            <label for="name">Название марки</label>
+                            <form:input class="form-control" path="name" id="name"/>
+                        </div>
+                        <button class="btn btn-success" type="submit">Добавить</button>
+                    </form:form>
+                    <div class="col-md-5">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>ID</th>
+                                <th>Марка</th>
+                                <th>Операции</th>
+                            </tr>
+                            <c:forEach items="${brands}" var="rt">
+                                <tr>
+                                    <td>${rt.id}</td>
+                                    <td>${rt.name}</td>
+                                    <td>
+                                        <a href="/admin/category/brand/delete?id=${rt.id}" class="btn btn-danger">Удалить</a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

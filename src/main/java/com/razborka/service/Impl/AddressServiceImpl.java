@@ -38,4 +38,13 @@ public class AddressServiceImpl implements AddressService {
     public List<Address> getAddressByUserId(int user_id) {
         return addressDao.getAddressByUserId(user_id);
     }
+
+    @Override
+    public List<Address> getAddressByUserRole(String role) {
+        return addressDao.getAddressByUserRole(role);
+    }
+
+    public List<String> getAllCities() {
+        return addressDao.getAllCities();
+    }
 }

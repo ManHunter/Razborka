@@ -1,8 +1,11 @@
 package com.razborka.service.Impl;
 
+import com.razborka.Constants;
 import com.razborka.dao.ReviewDao;
 import com.razborka.model.Review;
 import com.razborka.service.ReviewService;
+import com.razborka.util.EmailSender;
+import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +24,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void saveReview(Review review) {
+        review.setDate(LocalDateTime.now());
+
+        EmailSender sender = new EmailSender();
+        sender.send(review.getUser(), Constants.NEW_REVIEW);
+
         reviewDao.save(review);
     }
 

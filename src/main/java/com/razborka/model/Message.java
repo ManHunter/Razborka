@@ -1,7 +1,8 @@
 package com.razborka.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Type;
-import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -16,11 +17,10 @@ public class Message implements Serializable {
 
     private int id;
     private User user;
-    private String name;
-    private String phone;
-    private String email;
+    private User user_from;
+    private String subject;
     private String message;
-    private LocalDate date;
+    private LocalDateTime date;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,6 +33,7 @@ public class Message implements Serializable {
         this.id = id;
     }
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, unique = false)
     public User getUser() {
@@ -43,34 +44,27 @@ public class Message implements Serializable {
         this.user = user;
     }
 
-    @Column(name = "name")
-    public String getName() {
-        return name;
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "user_from", nullable = false, unique = false)
+    public User getUser_from() {
+        return user_from;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUser_from(User user_from) {
+        this.user_from = user_from;
     }
 
-    @Column(name = "phone")
-    public String getPhone() {
-        return phone;
+    @Column(name = "subject", nullable = false, unique = false)
+    public String getSubject() {
+        return subject;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
-    @Column(name = "email")
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    @Column(name = "message")
+    @Column(name = "message", nullable = false, unique = false)
     public String getMessage() {
         return message;
     }
@@ -81,13 +75,13 @@ public class Message implements Serializable {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "date", nullable = false)
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     @Temporal(TemporalType.TIMESTAMP)
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 }

@@ -2,8 +2,10 @@ package com.razborka.controller;
 
 import com.razborka.model.Car;
 import com.razborka.model.Photo;
+import com.razborka.model.User;
 import com.razborka.service.CarService;
 import com.razborka.service.PhotoService;
+import com.razborka.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
@@ -30,6 +32,9 @@ public class ImageController {
 
     @Autowired
     private CarService carService;
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/part/{image_name:.+}", method = RequestMethod.GET)
     public void getPart(HttpServletResponse response, HttpServletRequest request, @PathVariable String image_name){
@@ -61,16 +66,48 @@ public class ImageController {
         }
     }
 
+    @RequestMapping(value = "/user/{image_name:.+}", method = RequestMethod.GET)
+    public void getUser(HttpServletResponse response, HttpServletRequest request, @PathVariable String image_name) {
+        try {
+            FileInputStream inputStream = new FileInputStream(
+                    request.getServletContext().getRealPath("/") + "resources\\image\\user\\" + image_name);
+            response.setContentType("image/jpg");
+            response.setHeader("Content-disposition", "attachment; filename=\""+image_name+"\"");
+            FileCopyUtils.copy(inputStream, response.getOutputStream());
+        }catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     @RequestMapping(value = "/delete/car/{image_name:.+}", method = RequestMethod.POST)
     public void deleteCarImage(HttpServletRequest request,
-                            HttpServletResponse response,
-                            @PathVariable("image_name") String image_name) {
+                               HttpServletResponse response,
+                               @PathVariable("image_name") String image_name) {
         try {
             File file = new File(request.getServletContext().getRealPath("/") + "resources\\image\\car\\" + image_name);
             file.delete();
             Car car = carService.getCarByPhoto(image_name);
             car.setPhoto(null);
             carService.updateCar(car);
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write("OK");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @RequestMapping(value = "/delete/user/{image_name:.+}", method = RequestMethod.POST)
+    public void deleteUserImage(HttpServletRequest request,
+                               HttpServletResponse response,
+                               @PathVariable("image_name") String image_name) {
+        try {
+            File file = new File(request.getServletContext().getRealPath("/") + "resources\\image\\user\\" + image_name);
+            file.delete();
+            User user = userService.getCurrentUser();
+//            car.setPhoto(null);
+//            carService.updateCar(car);
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write("OK");
         } catch (Exception e) {

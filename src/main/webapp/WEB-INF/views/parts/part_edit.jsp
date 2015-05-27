@@ -34,35 +34,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a href="#" class="navbar-brand">РАЗБОРКА.by</a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href="/profile/">Кабинет</a>
-                    </li>
-                    <li>
-                        <a href="/profile/">Учетная запись</a>
-                    </li>
-                    <li>
-                        <a href="/profile/cars">Авто</a>
-                    </li>
-                    <li>
-                        <a href="/profile/parts">Запчасти</a>
-                    </li>
-                    <li>
-                        <a href="/profile/seller/orders">Заявки</a>
-                    </li>
-                    <li>
-                        <a href="/">Сайт</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    <%@include file="../layout/navbar_profile.jsp"%>
 
     <div class="row">
         <form:form action="/parts/edit/${part.id}" method="post" modelAttribute="part" enctype="multipart/form-data">

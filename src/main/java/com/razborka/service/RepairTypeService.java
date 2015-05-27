@@ -16,5 +16,7 @@ public interface RepairTypeService {
 
     public List<RepairType> getAllRepairType();
 
-    public RepairType getBodyById(int id);
+    public RepairType getRepairTypeById(int id);
+
+    public List<RepairType> getAllRepairTypeExceptUser(int user_id);
 }

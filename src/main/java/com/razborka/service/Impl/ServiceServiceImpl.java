@@ -42,4 +42,9 @@ public class ServiceServiceImpl implements ServiceService {
     public Service getServiceById(int id) {
         return serviceDao.get(id);
     }
+
+    @Override
+    public List<Service> getAllUserServices(int user_id) {
+        return serviceDao.getAllUserServices(user_id);
+    }
 }

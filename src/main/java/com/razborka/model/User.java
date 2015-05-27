@@ -1,10 +1,11 @@
 package com.razborka.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Type;
-import org.joda.time.LocalDate;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.joda.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -27,14 +28,22 @@ public class User implements Serializable {
     private String photo1;
     private String photo2;
     private String photo3;
-    private LocalDate date;
+    private String skype;
+    private String site;
+    private String description;
+    private LocalDateTime date;
 
     private List<Car> cars;
     private List<Service> services;
-    private List<Message> messages;
+    private List<Message> inboxMessages;
+    private List<Message> outboxMessages;
     private List<Review> reviews;
+    private List<Review> myReviews;
     private List<Address> addresses;
     private List<Phone> phones;
+    private List<Comment> comments;
+    private List<Request> userRequests;
+    private List<Request> requestsFromUsers;
 
     public User() {
     }
@@ -50,6 +59,8 @@ public class User implements Serializable {
         this.id = id;
     }
 
+    @NotEmpty()
+    @Size(min = 5, max = 30)
     @Column(name = "fio", nullable = false, length = 45)
     public String getFio() {
         return fio;
@@ -59,6 +70,7 @@ public class User implements Serializable {
         this.fio = fio;
     }
 
+//    @Size(min = 5, max = 45)
     @Column(name = "name", nullable = true, length = 45)
     public String getName() {
         return name;
@@ -68,6 +80,8 @@ public class User implements Serializable {
         this.name = name;
     }
 
+    @NotEmpty
+    @Email
     @Column(name = "email", nullable = false, length = 45)
     public String getEmail() {
         return email;
@@ -77,6 +91,8 @@ public class User implements Serializable {
         this.email = email;
     }
 
+    @NotEmpty
+    @Size(min = 5)
     @Column(name = "password", nullable = false)
     public String getPassword() {
         return password;
@@ -122,19 +138,46 @@ public class User implements Serializable {
         this.photo3 = photo3;
     }
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "skype")
+    public String getSkype() {
+        return skype;
+    }
+
+    public void setSkype(String skype) {
+        this.skype = skype;
+    }
+
+    @Column(name = "site")
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    @Column(name = "description")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
     @Column(name = "date", nullable = false)
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     @Temporal(TemporalType.TIMESTAMP)
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     public List<Service> getServices() {
         return services;
@@ -144,27 +187,27 @@ public class User implements Serializable {
         this.services = services;
     }
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    public List<Car> getParts() {
-        return cars;
+    public List<Message> getInboxMessages() {
+        return inboxMessages;
     }
 
-    public void setParts(List<Car> cars) {
-        this.cars = cars;
+    public void setInboxMessages(List<Message> inboxMessages) {
+        this.inboxMessages = inboxMessages;
     }
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    public List<Message> getMessages() {
-        return messages;
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user_from")
+    public List<Message> getOutboxMessages() {
+        return outboxMessages;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setOutboxMessages(List<Message> outboxMessages) {
+        this.outboxMessages = outboxMessages;
     }
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     public List<Review> getReviews() {
         return reviews;
@@ -174,8 +217,17 @@ public class User implements Serializable {
         this.reviews = reviews;
     }
 
-    @JsonIgnore
-    @Transient
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user_from")
+    public List<Review> getMyReviews() {
+        return myReviews;
+    }
+
+    public void setMyReviews(List<Review> myReviews) {
+        this.myReviews = myReviews;
+    }
+
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     //@Transient
     public List<Car> getCars() {
@@ -186,7 +238,7 @@ public class User implements Serializable {
         this.cars = cars;
     }
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     public List<Address> getAddresses() {
         return addresses;
@@ -196,7 +248,7 @@ public class User implements Serializable {
         this.addresses = addresses;
     }
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     public List<Phone> getPhones() {
         return phones;
@@ -204,5 +256,35 @@ public class User implements Serializable {
 
     public void setPhones(List<Phone> phones) {
         this.phones = phones;
+    }
+
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    public List<Request> getUserRequests() {
+        return userRequests;
+    }
+
+    public void setUserRequests(List<Request> userRequests) {
+        this.userRequests = userRequests;
+    }
+
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user_from")
+    public List<Request> getRequestsFromUsers() {
+        return requestsFromUsers;
+    }
+
+    public void setRequestsFromUsers(List<Request> requestsFromUsers) {
+        this.requestsFromUsers = requestsFromUsers;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

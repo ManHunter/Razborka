@@ -26,7 +26,14 @@ public interface CarService {
 
     public List<Car> getAllUserCars(int user_id);
 
+    public List<Car> getUserCars(int user_id, int brand_id, int model_id, int year, int volume, int fuel_id,
+                                 int body_id, int page);
+
+    public int numberOfCars(int user_id, int brand_id, int model_id, int year, int volume, int fuel_id, int body_id);
+
     public int countPartByCarId(int car_id);
 
     public Car getCarByPhoto(String photo_name);
+
+    public List<Integer> getAllEngineVolume();
 }

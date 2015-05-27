@@ -1,5 +1,6 @@
 package com.razborka.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Cascade;
@@ -33,6 +34,7 @@ public class Part implements Serializable {
     private LocalDateTime date;
 
     private List<Photo> photos;
+    private List<Comment> comments;
 
     public Part() {
     }
@@ -48,6 +50,7 @@ public class Part implements Serializable {
         this.id = id;
     }
 
+    @JsonBackReference
     @ManyToOne
     @Cascade(value = CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "car_id", nullable = true, unique = false)
@@ -124,6 +127,17 @@ public class Part implements Serializable {
 
     public void setPhotos(List<Photo> photos) {
         this.photos = photos;
+    }
+
+    @JsonManagedReference
+    @Cascade(CascadeType.DELETE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "part")
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")

@@ -1,6 +1,8 @@
 package com.razborka.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -28,10 +30,11 @@ public class Car implements Serializable {
     private int year_from;
     private int year_to;
     private String photo;
+    private String description;
     private LocalDateTime date;
 
-    private List<Order> orders;
     private List<Part> parts;
+    private List<Comment> comments;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,6 +47,7 @@ public class Car implements Serializable {
         this.id = id;
     }
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, unique = false)
     public User getUser() {
@@ -131,17 +135,7 @@ public class Car implements Serializable {
         this.year_to = year_to;
     }
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "car")
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
-
-    @JsonIgnore
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "car")
     public List<Part> getParts() {
         return parts;
@@ -149,6 +143,16 @@ public class Car implements Serializable {
 
     public void setParts(List<Part> parts) {
         this.parts = parts;
+    }
+
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "car")
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     @Column(name = "photo", nullable = true, unique = false)
@@ -160,7 +164,16 @@ public class Car implements Serializable {
         this.photo = photo;
     }
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "description", nullable = true, unique = false)
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
     @Column(name = "date", nullable = true)
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     @Temporal(TemporalType.TIMESTAMP)

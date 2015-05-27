@@ -11,7 +11,14 @@ import java.util.List;
 public interface AddressService {
 
     public void saveAddress(Address address);
+
     public void updateAddress(Address address);
+
     public void deleteAddress(int id);
+
     public List<Address> getAddressByUserId(int user_id);
+
+    public List<Address> getAddressByUserRole(String role);
+
+    public List<String> getAllCities();
 }

@@ -40,7 +40,12 @@ public class RepairTypeServiceImpl implements RepairTypeService {
     }
 
     @Override
-    public RepairType getBodyById(int id) {
+    public RepairType getRepairTypeById(int id) {
         return repairTypeDao.get(id);
+    }
+
+    @Override
+    public List<RepairType> getAllRepairTypeExceptUser(int user_id) {
+        return repairTypeDao.getAllRepairTypeExceptUser(user_id);
     }
 }

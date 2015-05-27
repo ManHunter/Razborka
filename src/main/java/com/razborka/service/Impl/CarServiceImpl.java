@@ -77,6 +77,17 @@ public class CarServiceImpl implements CarService {
         return carDao.getAllUserCars(user_id);
     }
 
+    @Override
+    public List<Car> getUserCars(int user_id, int brand_id, int model_id, int year, int volume, int fuel_id, int body_id, int page) {
+        return carDao.getUserCars(user_id, brand_id, model_id, year, volume, fuel_id,
+                body_id, page, false);
+    }
+
+    @Override
+    public int numberOfCars(int user_id, int brand_id, int model_id, int year, int volume, int fuel_id, int body_id) {
+        return carDao.numberOfCars(user_id, brand_id, model_id, year, volume, fuel_id, body_id);
+    }
+
     public int countPartByCarId(int car_id) {
         carDao.countPartByCarId(car_id);
 
@@ -85,6 +96,10 @@ public class CarServiceImpl implements CarService {
 
     public Car getCarByPhoto(String photo_name) {
         return carDao.getCarByPhoto(photo_name);
+    }
+
+    public List<Integer> getAllEngineVolume() {
+        return carDao.getAllEngineVolume();
     }
 
     public String generateFilename(String originalFilename) {

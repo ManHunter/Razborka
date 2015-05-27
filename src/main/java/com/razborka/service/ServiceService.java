@@ -19,4 +19,6 @@ public interface ServiceService {
     public List<Service> getAllService();
 
     public Service getServiceById(int id);
+
+    public List<Service> getAllUserServices(int user_id);
 }

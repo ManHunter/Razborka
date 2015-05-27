@@ -1,5 +1,7 @@
 package com.razborka.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 /**
@@ -14,15 +16,17 @@ public class Address {
     private String contry;
     private String city;
     private String address;
+    private String coordinates;
 
     public Address() {
     }
 
-    public Address(User user, String contry, String city, String address) {
+    public Address(User user, String contry, String city, String address, String coordinates) {
         this.user = user;
         this.contry = contry;
         this.city = city;
         this.address = address;
+        this.coordinates = coordinates;
     }
 
     @Id
@@ -36,6 +40,7 @@ public class Address {
         this.id = id;
     }
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, unique = false)
     public User getUser() {
@@ -71,5 +76,14 @@ public class Address {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Column(name = "coordinates", nullable = false, unique = false)
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
     }
 }
